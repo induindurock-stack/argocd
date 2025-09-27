@@ -51,7 +51,12 @@ argocd-apps-of-apps-github/
 
 ## 🔧 Configuration
 
-Update `YOUR_GITHUB_USERNAME` in all application files with your GitHub username.
+Repository configured for GitHub user: `induindurock-stack`
+
+### Prerequisites
+- EKS cluster with AWS Load Balancer Controller
+- ArgoCD installed
+- Domain: swaroopapractice.shop configured in DNS
 
 ## 📚 Documentation
 

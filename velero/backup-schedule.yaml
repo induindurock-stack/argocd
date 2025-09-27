@@ -1,0 +1,38 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: daily-microservices-backup
+  namespace: velero
+spec:
+  schedule: "0 2 * * *"  # Daily at 2 AM UTC
+  template:
+    includedNamespaces:
+    - user-service
+    - order-service
+    - payment-service
+    - ingress-system
+    excludedResources:
+    - events
+    - events.events.k8s.io
+    storageLocation: default
+    ttl: 720h0m0s  # 30 days retention
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: weekly-full-backup
+  namespace: velero
+spec:
+  schedule: "0 1 * * 0"  # Weekly on Sunday at 1 AM UTC
+  template:
+    includedNamespaces:
+    - "*"
+    excludedNamespaces:
+    - kube-system
+    - kube-public
+    - kube-node-lease
+    excludedResources:
+    - events
+    - events.events.k8s.io
+    storageLocation: default
+    ttl: 2160h0m0s  # 90 days retention
