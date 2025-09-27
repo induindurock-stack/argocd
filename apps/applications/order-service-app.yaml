@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/induindurock-stack/argocd-apps-of-apps-github
+    repoURL: https://github.com/induindurock-stack/argocd.git
     targetRevision: HEAD
     path: microservices/order-service
   destination:
