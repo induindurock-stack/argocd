@@ -17,22 +17,22 @@ spec:
     spec:
       containers:
       - name: order-service
-        image: httpd:latest
+        image: kennethreitz/httpbin
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         env:
         - name: SERVICE_NAME
           value: "order-service"
         livenessProbe:
           httpGet:
-            path: /
-            port: 80
+            path: /status/200
+            port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /
-            port: 80
+            path: /status/200
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
         resources:

@@ -3,14 +3,7 @@ kind: Namespace
 metadata:
   name: user-service
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: user-service-health
-  namespace: user-service
-data:
-  health: "OK"
----
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,26 +23,22 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: nginx:latest
+        image: kennethreitz/httpbin
         ports:
-        - containerPort: 80
-        volumeMounts:
-        - name: health-volume
-          mountPath: /usr/share/nginx/html/health
-          subPath: health
+        - containerPort: 8080
         env:
         - name: SERVICE_NAME
           value: "user-service"
         livenessProbe:
           httpGet:
-            path: /health
-            port: 80
+            path: /status/200
+            port: 8080
           initialDelaySeconds: 10
           periodSeconds: 5
         readinessProbe:
           httpGet:
-            path: /health
-            port: 80
+            path: /status/200
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
         resources:
@@ -59,13 +48,7 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "100m"
-      volumes:
-      - name: health-volume
-        configMap:
-          name: user-service-health
-          items:
-          - key: health
-            path: health
+
 ---
 apiVersion: v1
 kind: Service
