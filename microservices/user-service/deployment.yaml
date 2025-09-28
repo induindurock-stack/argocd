@@ -21,9 +21,21 @@ spec:
       labels:
         app: user-service
     spec:
+      initContainers:
+      - name: setup-content
+        image: busybox
+        command: 
+        - sh
+        - -c
+        - |
+          echo "OK" > /usr/share/nginx/html/health
+          echo "User Service - Welcome to User Management API" > /usr/share/nginx/html/index.html
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
       containers:
       - name: user-service
-        image: kennethreitz/httpbin
+        image: nginx:alpine
         ports:
         - containerPort: 80
         env:
@@ -31,16 +43,19 @@ spec:
           value: "user-service"
         livenessProbe:
           httpGet:
-            path: /status/200
+            path: /health
             port: 80
           initialDelaySeconds: 10
           periodSeconds: 5
         readinessProbe:
           httpGet:
-            path: /status/200
+            path: /health
             port: 80
           initialDelaySeconds: 5
           periodSeconds: 5
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
         resources:
           requests:
             memory: "64Mi"
@@ -48,6 +63,9 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "100m"
+      volumes:
+      - name: html-volume
+        emptyDir: {}
 
 ---
 apiVersion: v1
