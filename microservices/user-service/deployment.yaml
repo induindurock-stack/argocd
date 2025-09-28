@@ -1,3 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: user-service
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-service-health
+  namespace: user-service
+data:
+  health: "OK"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,6 +33,10 @@ spec:
         image: nginx:latest
         ports:
         - containerPort: 80
+        volumeMounts:
+        - name: health-volume
+          mountPath: /usr/share/nginx/html/health
+          subPath: health
         env:
         - name: SERVICE_NAME
           value: "user-service"
@@ -27,8 +44,8 @@ spec:
           httpGet:
             path: /health
             port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
+          initialDelaySeconds: 10
+          periodSeconds: 5
         readinessProbe:
           httpGet:
             path: /health
@@ -42,3 +59,24 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "100m"
+      volumes:
+      - name: health-volume
+        configMap:
+          name: user-service-health
+          items:
+          - key: health
+            path: health
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: user-service
+spec:
+  selector:
+    app: user-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
