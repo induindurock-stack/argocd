@@ -25,20 +25,20 @@ spec:
       - name: user-service
         image: kennethreitz/httpbin
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         env:
         - name: SERVICE_NAME
           value: "user-service"
         livenessProbe:
           httpGet:
             path: /status/200
-            port: 8080
+            port: 80
           initialDelaySeconds: 10
           periodSeconds: 5
         readinessProbe:
           httpGet:
             path: /status/200
-            port: 8080
+            port: 80
           initialDelaySeconds: 5
           periodSeconds: 5
         resources:

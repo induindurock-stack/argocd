@@ -19,20 +19,20 @@ spec:
       - name: payment-service
         image: kennethreitz/httpbin
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         env:
         - name: SERVICE_NAME
           value: "payment-service"
         livenessProbe:
           httpGet:
             path: /status/200
-            port: 8080
+            port: 80
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /status/200
-            port: 8080
+            port: 80
           initialDelaySeconds: 5
           periodSeconds: 5
         resources:
